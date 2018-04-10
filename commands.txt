@@ -1,0 +1,306 @@
+(DJANGO~1) C:\Users\jimgerar\Documents\Lab206 Code\Python\Django\shell_basics\users_project>python manage.py makemigrations
+Migrations for 'dojo_ninjas':
+  apps\dojo_ninjas\migrations\0001_initial.py
+    - Create model Dojo
+    - Create model Ninja
+
+(DJANGO~1) C:\Users\jimgerar\Documents\Lab206 Code\Python\Django\shell_basics\users_project>python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, dojo_ninjas, sessions, users
+Running migrations:
+  Applying dojo_ninjas.0001_initial... OK
+
+(DJANGO~1) C:\Users\jimgerar\Documents\Lab206 Code\Python\Django\shell_basics\users_project>python manage.python shell
+python: can't open file 'manage.python': [Errno 2] No such file or directory
+
+(DJANGO~1) C:\Users\jimgerar\Documents\Lab206 Code\Python\Django\shell_basics\users_project>python manage.py shell
+Python 2.7.14 (v2.7.14:84471935ed, Sep 16 2017, 20:25:58) [MSC v.1500 64 bit (AMD64)]
+Type "copyright", "credits" or "license" for more information.
+
+IPython 5.6.0 -- An enhanced Interactive Python.
+?         -> Introduction and overview of IPython's features.
+%quickref -> Quick reference.
+help      -> Python's own help system.
+object?   -> Details about 'object', use 'object??' for extra details.
+
+In [1]: from apps.dojo_ninjas.models import *
+
+In [2]: Dojo.objects.all()
+Out[2]: <QuerySet []>
+
+In [3]: Ninja.objects.all()
+Out[3]: <QuerySet []>
+
+In [4]: Dojo.objects.create (name='CodingDojo Silicon Valley', city='Mountain View', state='CA')
+Out[4]: <Dojo: Dojo object>
+
+In [5]: Dojo.objects.create (name='CodingDojo Seattle', city='Seattle', state='WA')
+Out[5]: <Dojo: Dojo object>
+
+In [6]: Dojo.objects.create (name='CodingDojo New York', city='New York', state='NY')
+Out[6]: <Dojo: Dojo object>
+
+In [7]: for element in Dojo: print element.name, element.city, element,state
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+<ipython-input-7-4aeb48d0534c> in <module>()
+----> 1 for element in Dojo: print element.name, element.city, element,state
+
+TypeError: 'ModelBase' object is not iterable
+
+In [8]: for element in Dojo.objects: print element.name, element.city, element,state
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+<ipython-input-8-b3c03a9a1b41> in <module>()
+----> 1 for element in Dojo.objects: print element.name, element.city, element,state
+
+TypeError: 'Manager' object is not iterable
+
+In [9]: for element in Dojo.objects.all(): print element.name, element.city, element,state
+CodingDojo Silicon Valley Mountain View Dojo object---------------------------------------------------------------------------
+NameError                                 Traceback (most recent call last)
+<ipython-input-9-07ed970fd545> in <module>()
+----> 1 for element in Dojo.objects.all(): print element.name, element.city, element,state
+
+NameError: name 'state' is not defined
+
+In [10]: for element in Dojo.objects.all(): print element.name, element.city, element.state
+ CodingDojo Silicon Valley Mountain View CA
+CodingDojo Seattle Seattle WA
+CodingDojo New York New York NY
+
+In [11]: Dojo.objects.first.name
+---------------------------------------------------------------------------
+AttributeError                            Traceback (most recent call last)
+<ipython-input-11-d4173fcf2d18> in <module>()
+----> 1 Dojo.objects.first.name
+
+AttributeError: 'function' object has no attribute 'name'
+
+In [12]: Dojo.objects.first().name
+Out[12]: u'CodingDojo Silicon Valley'
+
+In [13]: Ninja.objects.create(first_name='Gerardo', last_name='Blanco', dojo=Dojo.objects.get(id=1) )
+Out[13]: <Ninja: Ninja object>
+
+In [14]: Ninja.objects.create(first_name='Glenda', last_name='Blanco', dojo=Dojo.objects.get(id=1) )
+Out[14]: <Ninja: Ninja object>
+
+In [15]: Ninja.objects.create(first_name='Fanny', last_name='Blanco', dojo=Dojo.objects.get(id=1) )
+Out[15]: <Ninja: Ninja object>
+
+In [16]: for element in Ninja.objects.all(): print element.first_name, element.last_name
+Gerardo Blanco
+Glenda Blanco
+Fanny Blanco
+
+In [17]: Dojo.objects.get(id=1).ninjas
+Out[17]: <django.db.models.fields.related_descriptors.RelatedManager at 0x5f1cac8>
+
+In [18]: Dojo.objects.get(id=1).ninjas.all()
+Out[18]: <QuerySet [<Ninja: Ninja object>, <Ninja: Ninja object>, <Ninja: Ninja object>]>
+
+In [19]: for element in Dojo.objects.get(id=1).ninjas.all(): print element.first_name element.last_name
+  File "<ipython-input-19-980b0b912b41>", line 1
+    for element in Dojo.objects.get(id=1).ninjas.all(): print element.first_name element.last_name
+                                                                                       ^
+SyntaxError: invalid syntax
+
+
+In [20]: Dojo.objects.get(id=1).ninjas.all()
+Out[20]: <QuerySet [<Ninja: Ninja object>, <Ninja: Ninja object>, <Ninja: Ninja object>]>
+
+In [21]: for x in Dojo.objects.get(id=1).ninjas.all(): print x
+Ninja object
+Ninja object
+Ninja object
+
+In [22]: for x in Dojo.objects.get(id=1).ninjas.all(): print x.first_name
+Gerardo
+Glenda
+Fanny
+
+In [23]: for x in Dojo.objects.get(id=1).ninjas.all(): print x.first_name x.last_name
+  File "<ipython-input-23-097ad7275410>", line 1
+    for x in Dojo.objects.get(id=1).ninjas.all(): print x.first_name x.last_name
+                                                                     ^
+SyntaxError: invalid syntax
+
+
+In [24]: for x in Dojo.objects.get(id=1).ninjas.all(): print x.first_name, x.last_name
+Gerardo Blanco
+Glenda Blanco
+Fanny Blanco
+
+In [25]: Ninja.objects.create(first_name= 'Karla', last_name='Barboza', dojo=Dojo.objects.get(id=2))
+Out[25]: <Ninja: Ninja object>
+
+In [26]: Ninja.objects.create(first_name= 'Carlos', last_name='Barboza', dojo=Dojo.objects.get(id=2))
+Out[26]: <Ninja: Ninja object>
+
+In [27]: for x in Dojo.objects.get(id=2).ninjas.all(): print x.first_name, x.last_name
+Karla Barboza
+Carlos Barboza
+
+In [28]: Dojo.objects.first().ninjas.first_name__startwith='G'
+
+In [29]: Dojo.objects.first().ninjas.first_name__startwith='G'.last_name
+---------------------------------------------------------------------------
+AttributeError                            Traceback (most recent call last)
+<ipython-input-29-fd1ca2b61295> in <module>()
+----> 1 Dojo.objects.first().ninjas.first_name__startwith='G'.last_name
+
+AttributeError: 'str' object has no attribute 'last_name'
+
+In [30]: Dojo.objects.first().ninjas.filter(first_name__startwith='G').last_name
+---------------------------------------------------------------------------
+FieldError                                Traceback (most recent call last)
+<ipython-input-30-2bd54b631abe> in <module>()
+----> 1 Dojo.objects.first().ninjas.filter(first_name__startwith='G').last_name
+
+C:\Users\jimgerar\DOCUME~1\LAB206~2\Python\MYENVI~1\DJANGO~1\lib\site-packages\django\db\models\manager.pyc in manager_method(self, *args, **kwargs)
+     83         def create_method(name, method):
+     84             def manager_method(self, *args, **kwargs):
+---> 85                 return getattr(self.get_queryset(), name)(*args, **kwargs)
+     86             manager_method.__name__ = method.__name__
+     87             manager_method.__doc__ = method.__doc__
+
+C:\Users\jimgerar\DOCUME~1\LAB206~2\Python\MYENVI~1\DJANGO~1\lib\site-packages\django\db\models\query.pyc in filter(self, *args, **kwargs)
+    782         set.
+    783         """
+--> 784         return self._filter_or_exclude(False, *args, **kwargs)
+    785
+    786     def exclude(self, *args, **kwargs):
+
+C:\Users\jimgerar\DOCUME~1\LAB206~2\Python\MYENVI~1\DJANGO~1\lib\site-packages\django\db\models\query.pyc in _filter_or_exclude(self, negate, *args, **kwargs)
+    800             clone.query.add_q(~Q(*args, **kwargs))
+    801         else:
+--> 802             clone.query.add_q(Q(*args, **kwargs))
+    803         return clone
+    804
+
+C:\Users\jimgerar\DOCUME~1\LAB206~2\Python\MYENVI~1\DJANGO~1\lib\site-packages\django\db\models\sql\query.pyc in add_q(self, q_object)
+   1248         existing_inner = set(
+   1249             (a for a in self.alias_map if self.alias_map[a].join_type == INNER))
+-> 1250         clause, _ = self._add_q(q_object, self.used_aliases)
+   1251         if clause:
+   1252             self.where.add(clause, AND)
+
+C:\Users\jimgerar\DOCUME~1\LAB206~2\Python\MYENVI~1\DJANGO~1\lib\site-packages\django\db\models\sql\query.pyc in _add_q(self, q_object, used_aliases, branch_negated, current_negated, allow_joins, split_subq)
+   1274                     child, can_reuse=used_aliases, branch_negated=branch_negated,
+   1275                     current_negated=current_negated, connector=connector,
+-> 1276                     allow_joins=allow_joins, split_subq=split_subq,
+   1277                 )
+   1278                 joinpromoter.add_votes(needed_inner)
+
+C:\Users\jimgerar\DOCUME~1\LAB206~2\Python\MYENVI~1\DJANGO~1\lib\site-packages\django\db\models\sql\query.pyc in build_filter(self, filter_expr, branch_negated, current_negated, can_reuse, connector, allow_joins, split_subq)
+   1208         else:
+   1209             col = targets[0].get_col(alias, field)
+-> 1210             condition = self.build_lookup(lookups, col, value)
+   1211             lookup_type = condition.lookup_name
+   1212
+
+C:\Users\jimgerar\DOCUME~1\LAB206~2\Python\MYENVI~1\DJANGO~1\lib\site-packages\django\db\models\sql\query.pyc in build_lookup(self, lookups, lhs, rhs)
+   1100                     # the name as transform, and do an Exact lookup against
+   1101                     # it.
+-> 1102                     lhs = self.try_transform(lhs, name, lookups)
+   1103                     final_lookup = lhs.get_lookup('exact')
+   1104                 return final_lookup(lhs, rhs)
+
+C:\Users\jimgerar\DOCUME~1\LAB206~2\Python\MYENVI~1\DJANGO~1\lib\site-packages\django\db\models\sql\query.pyc in try_transform(self, lhs, name, rest_of_lookups)
+   1118                 "Unsupported lookup '%s' for %s or join on the field not "
+   1119                 "permitted." %
+-> 1120                 (name, lhs.output_field.__class__.__name__))
+   1121
+   1122     def build_filter(self, filter_expr, branch_negated=False, current_negated=False,
+
+FieldError: Unsupported lookup 'startwith' for CharField or join on the field not permitted.
+
+In [31]: Dojo.objects.first().ninjas.filter(first_name__startswith='G').last_name
+---------------------------------------------------------------------------
+AttributeError                            Traceback (most recent call last)
+<ipython-input-31-b7d76bce22d4> in <module>()
+----> 1 Dojo.objects.first().ninjas.filter(first_name__startswith='G').last_name
+
+AttributeError: 'QuerySet' object has no attribute 'last_name'
+
+In [32]: Dojo.objects.first().ninjas.filter(first_name__startswith='G')
+Out[32]: <QuerySet [<Ninja: Ninja object>, <Ninja: Ninja object>]>
+
+In [33]: Dojo.objects.first().ninjas.filter(first_name__startswith='F')
+Out[33]: <QuerySet [<Ninja: Ninja object>]>
+
+In [34]: Dojo.objects.first().ninjas.filter(first_name__startswith='F').last_name
+---------------------------------------------------------------------------
+AttributeError                            Traceback (most recent call last)
+<ipython-input-34-fb1bc0e07dd2> in <module>()
+----> 1 Dojo.objects.first().ninjas.filter(first_name__startswith='F').last_name
+
+AttributeError: 'QuerySet' object has no attribute 'last_name'
+
+In [35]: Dojo.objects.first().ninjas.filter(first_name__startswith='F')[0].last_name
+Out[35]: u'Blanco'
+
+In [36]: exit
+
+(DJANGO~1) C:\Users\jimgerar\Documents\Lab206 Code\Python\Django\shell_basics\users_project>python manage.py runserver
+Performing system checks...
+
+System check identified no issues (0 silenced).
+April 08, 2018 - 15:09:01
+Django version 1.11.12, using settings 'users_project.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CTRL-BREAK.
+
+(DJANGO~1) C:\Users\jimgerar\Documents\Lab206 Code\Python\Django\shell_basics\users_project>python manage.py makemigrations
+You are trying to add a non-nullable field 'desc' to dojo without a default; we can't do that (the database needs something to populate existing rows).
+Please select a fix:
+ 1) Provide a one-off default now (will be set on all existing rows with a null value for this column)
+ 2) Quit, and let me add a default in models.py
+Select an option: 2
+
+(DJANGO~1) C:\Users\jimgerar\Documents\Lab206 Code\Python\Django\shell_basics\users_project>python manage.py makemigrations
+Migrations for 'dojo_ninjas':
+  apps\dojo_ninjas\migrations\0002_dojo_desc.py
+    - Add field desc to dojo
+
+(DJANGO~1) C:\Users\jimgerar\Documents\Lab206 Code\Python\Django\shell_basics\users_project>python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, dojo_ninjas, sessions, users
+Running migrations:
+  Applying dojo_ninjas.0002_dojo_desc... OK
+
+(DJANGO~1) C:\Users\jimgerar\Documents\Lab206 Code\Python\Django\shell_basics\users_project>python manage.py shell
+Python 2.7.14 (v2.7.14:84471935ed, Sep 16 2017, 20:25:58) [MSC v.1500 64 bit (AMD64)]
+Type "copyright", "credits" or "license" for more information.
+
+IPython 5.6.0 -- An enhanced Interactive Python.
+?         -> Introduction and overview of IPython's features.
+%quickref -> Quick reference.
+help      -> Python's own help system.
+object?   -> Details about 'object', use 'object??' for extra details.
+
+In [1]: Dojo.objects.get(id=1).desc
+---------------------------------------------------------------------------
+NameError                                 Traceback (most recent call last)
+<ipython-input-1-eaa4257e64cf> in <module>()
+----> 1 Dojo.objects.get(id=1).desc
+
+NameError: name 'Dojo' is not defined
+
+In [2]: from apps.dojo_ninjas.models import *
+
+In [3]: Dojo.objects.get(id=1).desc
+Out[3]: u''
+
+In [4]: Dojo.objects.all().name
+---------------------------------------------------------------------------
+AttributeError                            Traceback (most recent call last)
+<ipython-input-4-d3a653398a22> in <module>()
+----> 1 Dojo.objects.all().name
+
+AttributeError: 'QuerySet' object has no attribute 'name'
+
+In [5]: exit
+
+(DJANGO~1) C:\Users\jimgerar\Documents\Lab206 Code\Python\Django\shell_basics\users_project>
